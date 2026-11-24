@@ -29,11 +29,70 @@
 
 <section id="gallery"><div class="wrap"><h2>師生活動</h2>
 <p>此區預留給課堂、實習與活動的照片與影片，後續課程完成拍攝後將陸續更新。</p>
-<div class="gallery">
-<figure><img src="graph/room1.jpg" alt="教室照片預留位置"><figcaption>教室</figcaption></figure>
-<figure><img src="graph/room2.jpg" alt="校外活動照片預留位置"><figcaption>校外活動</figcaption></figure>
-<figure><img src="graph/room3.jpg" alt="專題成果發表照片預留位置"><figcaption>專題成果發表</figcaption></figure>
+<div class="activity-carousel" aria-label="師生活動輪播" aria-roledescription="carousel">
+<div class="carousel-track">
+<figure class="carousel-slide is-active"><img src="graph/room1.jpg" alt="教室照片預留位置"><figcaption>教室</figcaption></figure>
+<figure class="carousel-slide"><img src="graph/room2.JPG" alt="校外活動照片預留位置"><figcaption>校外活動</figcaption></figure>
+<figure class="carousel-slide"><img src="graph/room3.jpg" alt="專題成果發表照片預留位置"><figcaption>專題成果發表</figcaption></figure>
+</div>
+<button class="carousel-control carousel-prev" type="button" aria-label="上一張活動照片">&#10094;</button>
+<button class="carousel-control carousel-next" type="button" aria-label="下一張活動照片">&#10095;</button>
+<div class="carousel-dots" aria-label="選擇活動照片">
+<button class="carousel-dot is-active" type="button" aria-label="顯示第 1 張：教室" aria-current="true"></button>
+<button class="carousel-dot" type="button" aria-label="顯示第 2 張：校外活動"></button>
+<button class="carousel-dot" type="button" aria-label="顯示第 3 張：專題成果發表"></button>
+</div>
 </div></div></section>
 </main>
 <footer id="contact"><div class="wrap"><p><strong>慈濟大學 資訊管理學系</strong></p><p>地址：花蓮縣花蓮市中央路三段701號</p><p>電話：03-8572677 轉分機 31683　電子郵件：ss233@gms.tcu.edu.tw</p><p><a href="index.html">系所簡介</a>　<a href="studentworks.html">學生作品</a></p></div></footer>
+<script>
+(() => {
+  const carousel = document.querySelector('.activity-carousel');
+  if (!carousel) return;
+
+  const slides = [...carousel.querySelectorAll('.carousel-slide')];
+  const dots = [...carousel.querySelectorAll('.carousel-dot')];
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let current = 0;
+  let timer;
+
+  function show(index) {
+    current = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => slide.classList.toggle('is-active', i === current));
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('is-active', i === current);
+      dot.toggleAttribute('aria-current', i === current);
+    });
+  }
+
+  function stop() {
+    window.clearInterval(timer);
+  }
+
+  function start() {
+    stop();
+    if (!reduceMotion) timer = window.setInterval(() => show(current + 1), 5000);
+  }
+
+  carousel.querySelector('.carousel-prev').addEventListener('click', () => {
+    show(current - 1);
+    start();
+  });
+  carousel.querySelector('.carousel-next').addEventListener('click', () => {
+    show(current + 1);
+    start();
+  });
+  dots.forEach((dot, i) => dot.addEventListener('click', () => {
+    show(i);
+    start();
+  }));
+  carousel.addEventListener('mouseenter', stop);
+  carousel.addEventListener('mouseleave', start);
+  carousel.addEventListener('focusin', stop);
+  carousel.addEventListener('focusout', start);
+
+  show(0);
+  start();
+})();
+</script>
 </body></html>
